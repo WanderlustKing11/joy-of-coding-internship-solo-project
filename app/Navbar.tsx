@@ -14,7 +14,7 @@ const Navbar = () => {
   ];
 
   const entryLinks = [
-    { label: 'Log In', href: '/myLibrary' },
+    { label: 'Log In', href: '/listslibrary' },
     { label: 'Create Account', href: '/newuser' },
   ];
 
