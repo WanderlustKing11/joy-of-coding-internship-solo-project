@@ -43,6 +43,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Enhanced user text formating with **SimpleMDE**
 - Enhanced dev environment thanks to **TypeScript**
 
-#### Currently being updated and maintained
+#### Under development
 
 Very happy to receive and feedback. This project is currently underway. I will update the documentation as the develpoment process evolves. Feel free to message with any comments, ideas, or concerns. Thanks to all, and hope you enjoy!
