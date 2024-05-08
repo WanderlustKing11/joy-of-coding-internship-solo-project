@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center justify-between'>
-      <Link href='/'>Logo</Link>
+      <Link href='/'>Get-Done</Link>
       <ul className='flex space-x-6'>
         {currentPath === '/'
           ? entryLinks.map((link) => (
