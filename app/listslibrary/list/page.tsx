@@ -1,5 +1,6 @@
+import TaskEditor from '@/app/components/TaskEditor';
 import { DotsVerticalIcon, Pencil2Icon } from '@radix-ui/react-icons';
-import { Button, IconButton } from '@radix-ui/themes';
+import { Button, Dialog, IconButton } from '@radix-ui/themes';
 import React from 'react';
 
 const ListPage = () => {
@@ -18,47 +19,54 @@ const ListPage = () => {
         </span>
       </div>
 
-      <div className='w-full'>
-        <ul>
-          <li className={taskStyle}>
-            <div className='pl-4 col-span-2 truncate ...'>
-              Task #1 blah blah blah blah blah blah blah blah blah
-            </div>
-            <div className='col-start-4 col-span-2'>due: 5/10/24</div>
-            <IconButton
-              className='col-start-6 flex justify-center'
-              color='gray'
-              variant='soft'
-            >
-              <DotsVerticalIcon width='18' height='18' />
-            </IconButton>
-          </li>
-          <li className={taskStyle}>
-            <div className='pl-4 col-span-2 truncate ...'>Task #2</div>
-            <div className='col-start-4 col-span-2'>due: 5/10/24</div>
-            <IconButton className='col-start-6' color='gray' variant='soft'>
-              <DotsVerticalIcon width='18' height='18' />
-            </IconButton>
-          </li>
-          <li className={taskStyle}>
-            <div className='pl-4 col-span-2 truncate ...'>Task #3</div>
-            <div className='col-start-4 col-span-2'>due: 5/10/24</div>
-            <IconButton className='col-start-6' color='gray' variant='soft'>
-              <DotsVerticalIcon width='18' height='18' />
-            </IconButton>
-          </li>
-          <li className={taskStyle}>
-            <div className='pl-4 col-span-2 truncate ...'>Task #4</div>
-            <div className='col-start-4 col-span-2'>due: 5/10/24</div>
-            <IconButton className='col-start-6' color='gray' variant='soft'>
-              <DotsVerticalIcon width='18' height='18' />
-            </IconButton>
-          </li>
-        </ul>
-      </div>
-      <div className='mt-16 mb-10'>
-        <Button>ADD NEW TASK</Button>
-      </div>
+      <Dialog.Root>
+        <div className='w-full'>
+          <ul>
+            <Dialog.Trigger>
+              <li className={taskStyle}>
+                <div className='pl-4 col-span-2 truncate ...'>
+                  Task #1 blah blah blah blah blah blah blah blah blah
+                </div>
+                <div className='col-start-4 col-span-2'>due: 5/10/24</div>
+                <IconButton
+                  className='col-start-6 flex justify-center'
+                  color='gray'
+                  variant='soft'
+                >
+                  <DotsVerticalIcon width='18' height='18' />
+                </IconButton>
+              </li>
+            </Dialog.Trigger>
+            <li className={taskStyle}>
+              <div className='pl-4 col-span-2 truncate ...'>Task #2</div>
+              <div className='col-start-4 col-span-2'>due: 5/10/24</div>
+              <IconButton className='col-start-6' color='gray' variant='soft'>
+                <DotsVerticalIcon width='18' height='18' />
+              </IconButton>
+            </li>
+            <li className={taskStyle}>
+              <div className='pl-4 col-span-2 truncate ...'>Task #3</div>
+              <div className='col-start-4 col-span-2'>due: 5/10/24</div>
+              <IconButton className='col-start-6' color='gray' variant='soft'>
+                <DotsVerticalIcon width='18' height='18' />
+              </IconButton>
+            </li>
+            <li className={taskStyle}>
+              <div className='pl-4 col-span-2 truncate ...'>Task #4</div>
+              <div className='col-start-4 col-span-2'>due: 5/10/24</div>
+              <IconButton className='col-start-6' color='gray' variant='soft'>
+                <DotsVerticalIcon width='18' height='18' />
+              </IconButton>
+            </li>
+          </ul>
+        </div>
+        <div className='mt-16 mb-10'>
+          <Dialog.Trigger>
+            <Button>ADD NEW TASK</Button>
+          </Dialog.Trigger>
+        </div>
+        <TaskEditor />
+      </Dialog.Root>
     </div>
   );
 };
