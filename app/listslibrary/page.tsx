@@ -1,14 +1,23 @@
-import { IconButton } from '@radix-ui/themes';
+import { Button, IconButton, Select } from '@radix-ui/themes';
 import Link from 'next/link';
 import { TrashIcon } from '@radix-ui/react-icons';
+import SelectSort from '../components/SelectSort';
 
 const ListsLibraryPage = () => {
-  const listStyle = 'grid grid-cols-6 gap-4 py-2 hover:bg-slate-400';
+  const listStyle =
+    'grid grid-cols-6 gap-4 py-2 pl-4 rounded hover:bg-slate-400';
 
   return (
     <div className='w-full h-full'>
-      {/* TITLE */}
-      <h2 className='text-3xl flex flex-wrap mb-14'>Lists Library</h2>
+      <div className='flex flex-row'>
+        {/* TITLE */}
+        <h2 className='text-3xl flex flex-wrap mb-14'>Lists Library</h2>
+        <SelectSort className='ml-14'>
+          <Select.Item value='oldest'>oldest</Select.Item>
+          <Select.Item value='newest'>newest</Select.Item>
+          <Select.Item value='alphabetical'>alphabetical</Select.Item>
+        </SelectSort>
+      </div>
 
       {/* lISTS */}
       {/* ***** Create an option to delete lists ***** */}
@@ -54,6 +63,9 @@ const ListsLibraryPage = () => {
             </li>
           </Link>
         </ul>
+      </div>
+      <div className='mt-14'>
+        <Button>Create New List</Button>
       </div>
     </div>
   );
