@@ -1,9 +1,10 @@
 'use client';
 
-import { Button } from '@radix-ui/themes';
+import { AlertDialog, Button } from '@radix-ui/themes';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import LogOutAlert from './components/LogOutAlert';
 
 const Navbar = () => {
   const currentPath = usePathname();
@@ -11,18 +12,17 @@ const Navbar = () => {
   const links = [
     { label: 'myLists', href: '/listslibrary' },
     { label: 'Profile', href: '/profile' },
-    { label: 'Log Out', href: '/' },
   ];
 
-  const entryLinks = [
-    { label: 'Log In', href: '/listslibrary' },
-    { label: 'Create Account', href: '/newuser' },
-  ];
+  // const entryLinks = [
+  //   { label: 'Log In', href: '/listslibrary' },
+  //   { label: 'Create Account', href: '/newuser' },
+  // ];
 
   return (
     <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center justify-between'>
       <Link href='/'>GET/Done</Link>
-      <ul className='flex space-x-6'>
+      <ul>
         {currentPath === '/' ? (
           // ? entryLinks.map((link) => (
           //     <Link key={link.href} href={link.href}>
@@ -33,15 +33,23 @@ const Navbar = () => {
             <Button>Log In</Button>
           </Link>
         ) : (
-          links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className='text-sky-500 hover:text-sky-200'
-            >
-              {link.label}
-            </Link>
-          ))
+          <div className='flex space-x-8 items-center'>
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className='text-sky-500 hover:text-sky-200'
+              >
+                {link.label}
+              </Link>
+            ))}
+            <AlertDialog.Root>
+              <AlertDialog.Trigger>
+                <Button>Log Out</Button>
+              </AlertDialog.Trigger>
+              <LogOutAlert />
+            </AlertDialog.Root>
+          </div>
         )}
       </ul>
     </nav>

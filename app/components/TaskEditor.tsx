@@ -1,3 +1,6 @@
+'use client';
+
+import 'easymde/dist/easymde.min.css';
 import {
   Button,
   Dialog,
@@ -7,7 +10,6 @@ import {
   TextArea,
   TextField,
 } from '@radix-ui/themes';
-import React from 'react';
 
 const TaskEditor = () => {
   return (
