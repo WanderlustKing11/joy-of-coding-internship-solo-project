@@ -1,7 +1,8 @@
-import { Button, IconButton, Select } from '@radix-ui/themes';
+import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import Link from 'next/link';
 import { TrashIcon } from '@radix-ui/react-icons';
 import SelectSort from '../components/SelectSort';
+import ListPopup from '../components/ListPopup';
 
 const ListsLibraryPage = () => {
   const listStyle =
@@ -65,7 +66,12 @@ const ListsLibraryPage = () => {
         </ul>
       </div>
       <div className='mt-14'>
-        <Button>Create New List</Button>
+        <Dialog.Root>
+          <Dialog.Trigger>
+            <Button>Create New List</Button>
+          </Dialog.Trigger>
+          <ListPopup />
+        </Dialog.Root>
       </div>
     </div>
   );
