@@ -2,7 +2,7 @@ import { TaskDataProps, taskData } from '@/app/data/taskData';
 import SelectSort from '@/app/components/SelectSort';
 import Task from '@/app/components/Task';
 import TaskEditor from '@/app/components/TaskEditor';
-import { DotsVerticalIcon, Pencil2Icon } from '@radix-ui/react-icons';
+import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 
 const ListPage = () => {
