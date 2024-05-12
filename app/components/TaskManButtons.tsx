@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   CheckIcon,
@@ -8,7 +9,6 @@ import {
   TrashIcon,
 } from '@radix-ui/react-icons';
 import { IconButton } from '@radix-ui/themes';
-import React, { useState } from 'react';
 
 interface TaskButtonsProps {
   onCheckClick: () => void;
@@ -25,15 +25,37 @@ const TaskManButtons: React.FC<TaskButtonsProps> = ({
   isCompleted,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      console.log('Document was clicked');
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        console.log('Click was oustide');
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className='w-full flex flex-row'>
       <IconButton
-        onClick={toggleOpen}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleOpen();
+        }}
         className='ml-10 z-20'
         color='gray'
         variant='surface'
