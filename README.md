@@ -46,3 +46,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 #### Under development
 
 Very happy to receive and feedback. This project is currently underway. I will update the documentation as the develpoment process evolves. Feel free to message with any comments, ideas, or concerns. Thanks to all, and hope you enjoy!
+
+### Issues
+
+1. In the [List Page](https://github.com/WanderlustKing11/next-task-manager/blob/main/app/listslibrary/list/page.tsx), the desired behavior is to have the `completed` and `trash` buttons toggle in and out when clicking the **vertical dots** button, and additionally toggling off when clicking anywhere else on the page.
+
+- Attempts to do this without useEffect have failed. Is useEffect a standard parctice for doing this?
+- Attempted to use `handleClose` function in a parent container, but then requires running entire page on client-side, affecting site performance. In addition, clicking one tasks' 'dots' button triggered all the other tasks, instead of the attributed task.
+  _This issue is being reprioritized and will be returned to at a later date_

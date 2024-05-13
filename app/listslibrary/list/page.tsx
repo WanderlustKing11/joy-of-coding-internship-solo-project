@@ -4,10 +4,25 @@ import Task from '@/app/components/Task';
 import TaskEditor from '@/app/components/TaskEditor';
 import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
+import { useState } from 'react';
 
 const ListPage = () => {
+  // const [isOpen, setIsOpen] = useState(false);
+
+  // const toggleOpen = () => {
+  //   setIsOpen(!isOpen);
+  // };
+
+  // const handleClose = () => {
+  //   if (isOpen) {
+  //     setIsOpen(false);
+  //   }
+  // };
   return (
-    <div className='w-full h-full flex flex-col items-center'>
+    <div
+      className='w-full h-full flex flex-col items-center'
+      // onClick={handleClose}
+    >
       {/* TITLE */}
       <div className='flex flex-row space-x-10 group'>
         <h1 className='text-3xl mb-14 group-hover:opacity-75'>List Title</h1>
@@ -34,6 +49,8 @@ const ListPage = () => {
                 key={tasks.task}
                 task={tasks.task}
                 dueDate={tasks.dueDate}
+                // toggleOpen={toggleOpen}
+                // isOpen={isOpen}
               />
             ))}
           </ul>

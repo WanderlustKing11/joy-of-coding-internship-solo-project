@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   CheckIcon,
@@ -25,37 +23,15 @@ const TaskManButtons: React.FC<TaskButtonsProps> = ({
   isCompleted,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      console.log('Document was clicked');
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        console.log('Click was oustide');
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   return (
     <div className='w-full flex flex-row'>
       <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleOpen();
-        }}
+        onClick={toggleOpen}
         className='ml-10 z-20'
         color='gray'
         variant='surface'

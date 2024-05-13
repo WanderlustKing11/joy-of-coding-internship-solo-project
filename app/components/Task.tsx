@@ -1,16 +1,24 @@
 'use client';
 
+import { useState } from 'react';
 import { Dialog } from '@radix-ui/themes';
 import TaskManButtons from './TaskManButtons';
-import { useState } from 'react';
 
 interface TaskProps {
+  // id: number;
   task: string;
   dueDate: string;
+  // toggleOpen: () => void;
+  // isOpen: boolean;
 }
 
 const Task: React.FC<TaskProps> = ({ task, dueDate }) => {
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
 
   const handleComplete = () => {
     setIsCompleted((checked) => !checked);
@@ -21,14 +29,22 @@ const Task: React.FC<TaskProps> = ({ task, dueDate }) => {
   }`;
 
   return (
-    <div className='w-full max-w-[60rem] grid grid-cols-[auto,1fr,auto] items-center gap-4'>
+    <div
+      className='w-full max-w-[60rem] grid grid-cols-[auto,1fr,auto] items-center gap-4'
+      onClick={(e) => e.stopPropagation()}
+    >
       <Dialog.Trigger>
         <li className={taskStyle}>
           <div className='pl-4 col-span-2 truncate'>{task}</div>
           <div className='truncate'>due: {dueDate}</div>
         </li>
       </Dialog.Trigger>
-      <TaskManButtons isCompleted={isCompleted} onCheckClick={handleComplete} />
+      <TaskManButtons
+        isCompleted={isCompleted}
+        onCheckClick={handleComplete}
+        // toggleOpen={toggleOpen}
+        // isOpen={isOpen}
+      />
     </div>
   );
 };
