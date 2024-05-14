@@ -1,6 +1,7 @@
 'use client';
 
 import { AlertDialog, Button, Flex } from '@radix-ui/themes';
+import Link from 'next/link';
 
 const LogOutAlert = () => {
   return (
@@ -17,9 +18,11 @@ const LogOutAlert = () => {
           </Button>
         </AlertDialog.Cancel>
         <AlertDialog.Action>
-          <Button variant='solid' color='red'>
-            Log me out
-          </Button>
+          <Link href='/'>
+            <Button variant='solid' color='red'>
+              Log me out
+            </Button>
+          </Link>
         </AlertDialog.Action>
       </Flex>
     </AlertDialog.Content>

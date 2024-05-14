@@ -3,7 +3,7 @@
 import { AlertDialog, Button } from '@radix-ui/themes';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React from 'react';
+import classNames from 'classnames';
 import LogOutAlert from './components/LogOutAlert';
 
 const Navbar = () => {
@@ -14,14 +14,15 @@ const Navbar = () => {
     { label: 'Profile', href: '/profile' },
   ];
 
-  // const entryLinks = [
-  //   { label: 'Log In', href: '/listslibrary' },
-  //   { label: 'Create Account', href: '/newuser' },
-  // ];
-
   return (
     <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center justify-between'>
-      <Link href='/'>GET/Done</Link>
+      <Link href='/'>
+        <div className='h-full flex flex-row font-bold'>
+          <div>GET</div>
+          <span className='text-2xl'>/</span>
+          <div className='pt-3'>Done</div>
+        </div>
+      </Link>
       <ul>
         {currentPath === '/' ? (
           // ? entryLinks.map((link) => (
@@ -38,7 +39,11 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className='text-indigo-400 hover:text-indigo-300'
+                className={classNames({
+                  'font-bold': link.href === currentPath,
+                  'text-indigo-400': link.href !== currentPath,
+                  'hover:text-indigo-700 transition-colors': true,
+                })}
               >
                 {link.label}
               </Link>
