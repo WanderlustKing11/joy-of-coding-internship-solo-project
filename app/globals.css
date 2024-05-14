@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+
+body {
+  @apply bg-background;
+}
+
+ .site-container {
+  background-color: #091227 !important;
+  color: #78a0fd !important;
+}
+
+
+/* //////////////////////////////////////////////////////////// */
+/* Layering Radix Themes */
+/* @layer tw_base, radix_ui, tw_components_utils;
+@import '@radix-ui/themes/styles.css' layer(radix_ui);
+
+@layer tw_base {
+  @tailwind base;
+}
+
+@layer tw_components_utils {
+  @tailwind components;
+  @tailwind utilities; 
+} */
+
+
+
+
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

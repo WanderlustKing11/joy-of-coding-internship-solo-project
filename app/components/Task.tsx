@@ -24,8 +24,8 @@ const Task: React.FC<TaskProps> = ({ task, dueDate }) => {
     setIsCompleted((checked) => !checked);
   };
 
-  const taskStyle = `grid grid-cols-3 gap-4 my-4 py-2 items-center border-2 border-solid border-zinc-500 rounded-xl border-b last:border-b-2 hover:bg-zinc-400 col-span-2 ${
-    isCompleted ? 'bg-green-300' : 'border-solid border-zinc-500'
+  const taskStyle = `grid grid-cols-3 gap-4 my-4 py-2 items-center border-2 border-solid border-blue-950 rounded-xl border-b last:border-b-2 hover:bg-blue-950 hover:text-indigo-300 col-span-2 ${
+    isCompleted ? 'bg-slate-900 text-slate-600' : 'border-solid border-zinc-500'
   }`;
 
   return (

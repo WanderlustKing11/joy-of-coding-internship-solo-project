@@ -33,8 +33,8 @@ const TaskManButtons: React.FC<TaskButtonsProps> = ({
       <IconButton
         onClick={toggleOpen}
         className='ml-10 z-20'
-        color='gray'
-        variant='surface'
+        variant='soft'
+        aria-activedescendant='toggle menu'
       >
         <DotsVerticalIcon width='18' height='18' />
       </IconButton>

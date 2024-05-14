@@ -38,7 +38,7 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className='text-sky-500 hover:text-sky-200'
+                className='text-indigo-400 hover:text-indigo-300'
               >
                 {link.label}
               </Link>

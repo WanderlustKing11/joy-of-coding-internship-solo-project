@@ -6,7 +6,7 @@ import ListPopup from '../components/ListPopup';
 
 const ListsLibraryPage = () => {
   const listStyle =
-    'grid grid-cols-6 gap-4 py-2 pl-4 rounded hover:bg-slate-400';
+    'grid grid-cols-6 gap-4 py-2 pl-4 rounded hover:bg-blue-950 hover:text-indigo-300';
 
   return (
     <div className='w-full h-full'>
@@ -27,9 +27,9 @@ const ListsLibraryPage = () => {
           <Link href='/listslibrary/list'>
             <li className={listStyle}>
               <div className='col-span-2'>List #1</div>
-              <div className='col-start-3 col-span-2'>create: 5/10/24</div>
+              <div className='col-start-3 col-span-2'>created: 5/10/24</div>
               <IconButton className='col-start-5' color='gray' variant='soft'>
-                <TrashIcon width='18' height='18' />
+                <TrashIcon width='18' height='18' color='gray' />
               </IconButton>
             </li>
           </Link>
@@ -37,9 +37,9 @@ const ListsLibraryPage = () => {
           <Link href='/listslibrary/list'>
             <li className={listStyle}>
               <div className='col-span-2'>List #2</div>
-              <div className='col-start-3 col-span-2'>create: 5/15/24</div>
+              <div className='col-start-3 col-span-2'>created: 5/15/24</div>
               <IconButton className='col-start-5' color='gray' variant='soft'>
-                <TrashIcon width='18' height='18' />
+                <TrashIcon width='18' height='18' color='gray' />
               </IconButton>
             </li>
           </Link>
@@ -47,9 +47,9 @@ const ListsLibraryPage = () => {
           <Link href='/listslibrary/list'>
             <li className={listStyle}>
               <div className='col-span-2'>List #3</div>
-              <div className='col-start-3 col-span-2'>create: 5/29/24</div>
+              <div className='col-start-3 col-span-2'>created: 5/29/24</div>
               <IconButton className='col-start-5' color='gray' variant='soft'>
-                <TrashIcon width='18' height='18' />
+                <TrashIcon width='18' height='18' color='gray' />
               </IconButton>
             </li>
           </Link>
@@ -57,9 +57,9 @@ const ListsLibraryPage = () => {
           <Link href='/listslibrary/list'>
             <li className={listStyle}>
               <div className='col-span-2'>List #4</div>
-              <div className='col-start-3 col-span-2'>create: 6/01/24</div>
+              <div className='col-start-3 col-span-2'>created: 6/01/24</div>
               <IconButton className='col-start-5' color='gray' variant='soft'>
-                <TrashIcon width='18' height='18' />
+                <TrashIcon width='18' height='18' color='gray' />
               </IconButton>
             </li>
           </Link>
