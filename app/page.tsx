@@ -1,6 +1,7 @@
 import { Skeleton } from '@radix-ui/themes';
 
 export default function Home() {
+  console.log('Hello, world!');
   return (
     <div className='w-full h-full flex flex-col items-start'>
       <h1 className='text-3xl sm:text-4xl lg:text-5xl flex flex-wrap'>
