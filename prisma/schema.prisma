@@ -9,6 +9,19 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  dueDateTime DateTime
+  description String   @db.Text
+  status      Status   @default(INCOMPLETE)
+}
+
+enum Status {
+  INCOMPLETE
+  COMPLETE
 }
