@@ -10,8 +10,31 @@ import {
   TextArea,
   TextField,
 } from '@radix-ui/themes';
+import { useState } from 'react';
 
 const TaskEditor = () => {
+  const [title, setTitle] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [dueTime, setDueTime] = useState('');
+  const [description, setDescription] = useState('');
+
+  const handleSave = async () => {
+    // Combine dueDate and dueTime into a single ISO string
+    const dueDateTime = new Date(`${dueDate}T${dueTime}:00`).toISOString();
+
+    const task = { title, dueDateTime, description };
+
+    const response = await fetch('../api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(task),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to create task');
+    }
+  };
+
   return (
     <div>
       <Dialog.Content maxWidth='450px'>
@@ -25,7 +48,11 @@ const TaskEditor = () => {
             <Text as='div' size='2' mb='1' weight='bold'>
               Title
             </Text>
-            <TextField.Root defaultValue='Task # 1' placeholder='Task Name' />
+            <TextField.Root
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder='Task Name'
+            />
           </label>
           <label>
             <Text as='div' size='2' mb='1' weight='bold'>
@@ -34,18 +61,26 @@ const TaskEditor = () => {
             <div className='flex flex-row'>
               {/* TIME */}
               <div className='flex flex-row space-x-2'>
-                <TextField.Root type='time' defaultValue='4' />
+                <TextField.Root
+                  type='time'
+                  value={dueTime}
+                  onChange={(e) => setDueTime(e.target.value)}
+                />
                 {/* <div>:</div>
                 <TextField.Root type='time' className='w-7' defaultValue='2' />
                 <TextField.Root type='time' className='w-7' defaultValue='0' /> */}
-                <IconButton size='2' radius='small' color='gray'>
+                {/* <IconButton size='2' radius='small' color='gray'>
                   AM
-                </IconButton>
+                </IconButton> */}
               </div>
 
               {/* DATE */}
               <div className='flex flex-row space-x-2 ml-10'>
-                <TextField.Root type='date' defaultValue='01' />
+                <TextField.Root
+                  type='date'
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
                 {/* <div>/</div>
                 <TextField.Root type='date' className='w-7' defaultValue='15' />
                 <div>/</div>
@@ -80,7 +115,8 @@ const TaskEditor = () => {
             <TextArea
               size='2'
               className='h-[20rem]'
-              defaultValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               placeholder='Task description...'
             />
           </label>
@@ -88,7 +124,7 @@ const TaskEditor = () => {
 
         <Flex gap='3' mt='4' justify='end'>
           <Dialog.Close>
-            <Button variant='soft' color='gray'>
+            <Button variant='soft' color='gray' onClick={handleSave}>
               Cancel
             </Button>
           </Dialog.Close>
