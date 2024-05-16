@@ -1,12 +1,22 @@
 'use client';
 
-import { TaskDataProps, taskData } from '@/app/data/taskData';
+// import { TaskDataProps, taskData } from '@/app/data/taskData';
+import { createTaskSchema } from '@/app/validationSchemas';
 import SelectSort from '@/app/components/SelectSort';
 import Task from '@/app/components/Task';
 import TaskEditor from '@/app/components/TaskEditor';
 import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { z } from 'zod';
+
+type TaskData = z.infer<typeof createTaskSchema>;
+
+// const fetchTasks = async () => {
+//   const response = await axios.get('/api/tasks');
+//   return response.data;
+// };
 
 const ListPage = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +31,17 @@ const ListPage = () => {
   //   }
   // };
   const [editorOpen, setEditorOpen] = useState(false);
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const response = await axios.get('/api/tasks');
+      setTasks(response.data);
+    };
+    fetchTasks();
+  }, []);
+
+  // const Tasks = await fetchTasks();
 
   const handleAddTask = () => {
     setEditorOpen(true); // open the editor for a new task
@@ -56,11 +77,11 @@ const ListPage = () => {
       <Dialog.Root>
         <div className='w-full'>
           <ul>
-            {taskData.map((tasks: TaskDataProps) => (
+            {tasks.map((tasks: TaskData) => (
               <Task
-                key={tasks.task}
-                task={tasks.task}
-                dueDate={tasks.dueDate}
+                key={tasks.id}
+                task={tasks.title}
+                dueDate={tasks.dueDateTime}
                 // toggleOpen={toggleOpen}
                 // isOpen={isOpen}
               />
