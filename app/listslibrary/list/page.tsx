@@ -1,3 +1,5 @@
+'use client';
+
 import { TaskDataProps, taskData } from '@/app/data/taskData';
 import SelectSort from '@/app/components/SelectSort';
 import Task from '@/app/components/Task';
@@ -18,6 +20,16 @@ const ListPage = () => {
   //     setIsOpen(false);
   //   }
   // };
+  const [editorOpen, setEditorOpen] = useState(false);
+
+  const handleAddTask = () => {
+    setEditorOpen(true); // open the editor for a new task
+  };
+
+  const handleCloseEditor = () => {
+    setEditorOpen(false); // Close the editor
+  };
+
   return (
     <div
       className='w-full h-full flex flex-col items-center'
@@ -57,10 +69,10 @@ const ListPage = () => {
         </div>
         <div className='mt-16 mb-10'>
           <Dialog.Trigger>
-            <Button>ADD NEW TASK</Button>
+            <Button onClick={handleAddTask}>ADD NEW TASK</Button>
           </Dialog.Trigger>
         </div>
-        <TaskEditor />
+        <TaskEditor isOpen={editorOpen} onClose={handleCloseEditor} />
       </Dialog.Root>
     </div>
   );

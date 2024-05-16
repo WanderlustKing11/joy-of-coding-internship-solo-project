@@ -12,7 +12,7 @@ import {
 } from '@radix-ui/themes';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
-import { createRef, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formTaskSchema } from '../validationSchemas';
@@ -20,30 +20,27 @@ import { z } from 'zod';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
 
-///////// Original Interface ///////////
-// interface TaskForm {
-//   title: string;
-//   dueDate: string;
-//   dueTime: string;
-//   description: string;
-// }
+interface TaskProps {
+  onClose: () => void;
+  isOpen: boolean;
+}
 
 /////////// Zod inferiing types based on our Schema ////////////
 type TaskForm = z.infer<typeof formTaskSchema>;
 
-const TaskEditor = () => {
+const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
   const router = useRouter();
+  const [error, setError] = useState('');
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<TaskForm>({
     resolver: zodResolver(formTaskSchema),
   });
-  const [error, setError] = useState('');
-  const [isSubmitting, setSubmitting] = useState(false);
-  const ref = createRef<HTMLFormElement>(null);
 
   const onSubmit = async (data: TaskForm) => {
     // Combine dueDate and dueTime into a single ISO string
@@ -62,8 +59,9 @@ const TaskEditor = () => {
       setSubmitting(true);
       const response = await axios.post('/api/tasks', task);
       console.log('Task created:', response.data);
-      router.push('/listslibrary/list');
-      ref.current.reset();
+      // router.push('/listslibrary/list');
+      reset();
+      onClose();
     } catch (error) {
       setSubmitting(false);
       console.log('Failed to create task:', error);
@@ -71,9 +69,11 @@ const TaskEditor = () => {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <div>
-      <form ref={ref} onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Dialog.Content maxWidth='450px'>
           <Flex direction='column' gap='3'>
             {error && (
