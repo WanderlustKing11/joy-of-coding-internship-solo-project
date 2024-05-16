@@ -14,59 +14,52 @@ import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { describe } from 'node:test';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formTaskSchema } from '../validationSchemas';
+import { z } from 'zod';
 
-interface TaskForm {
-  title: string;
-  dueDate: string;
-  dueTime: string;
-  description: string;
-}
+///////// Original Interface ///////////
+// interface TaskForm {
+//   title: string;
+//   dueDate: string;
+//   dueTime: string;
+//   description: string;
+// }
+
+/////////// Zod inferiing types based on our Schema ////////////
+type TaskForm = z.infer<typeof formTaskSchema>;
 
 const TaskEditor = () => {
-  // const [title, setTitle] = useState('');
-  // const [dueDate, setDueDate] = useState('');
-  // const [dueTime, setDueTime] = useState('');
-  // const [description, setDescription] = useState('');
-
-  // const handleSave = async () => {
-  //   // Combine dueDate and dueTime into a single ISO string
-  //   const dueDateTime = new Date(`${dueDate}T${dueTime}:00`).toISOString();
-
-  //   const task = { title, dueDateTime, description };
-
-  //   const response = await fetch('../api/tasks', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify(task),
-  //   });
-
-  //   if (!response.ok) {
-  //     console.error('Failed to create task');
-  //   }
-  // };
   const router = useRouter();
 
-  const { register, control, handleSubmit } = useForm<TaskForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TaskForm>({
+    resolver: zodResolver(formTaskSchema),
+  });
   const [error, setError] = useState('');
 
   const onSubmit = async (data: TaskForm) => {
     // Combine dueDate and dueTime into a single ISO string
     const dueDateTime = new Date(
-      `${data.dueDate}T${data.dueTime}:00`
+      `${data.dueDate}T${data.dueTime}`
     ).toISOString();
 
     // task object with the combined date and time
     const task = {
       title: data.title,
-      dueDateTime: dueDateTime,
+      dueDateTime,
       description: data.description,
     };
 
     try {
-      await axios.post('/api/tasks', task);
+      const response = await axios.post('/api/tasks', task);
+      console.log('Task created:', response.data);
       router.push('/listslibrary/list');
     } catch (error) {
+      console.log('Failed to create task:', error);
       setError('An unexpected error occurred.');
     }
   };
@@ -76,20 +69,20 @@ const TaskEditor = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Dialog.Content maxWidth='450px'>
           <Flex direction='column' gap='3'>
+            {error && (
+              <Callout.Root color='red'>
+                <Callout.Text>{error}</Callout.Text>
+              </Callout.Root>
+            )}
             <label>
               <Text as='div' size='2' mb='1' weight='bold'>
                 Title
               </Text>
-              <TextField.Root
-                // value={title}
-                // onChange={(e) => setTitle(e.target.value)}
-                {...register('title')}
-                placeholder='Task Name'
-              />
-              {error && (
-                <Callout.Root color='red'>
-                  <Callout.Text>{error}</Callout.Text>
-                </Callout.Root>
+              <TextField.Root {...register('title')} placeholder='Task Name' />
+              {errors.title && (
+                <Text className='pt-2' color='red' as='p'>
+                  {errors.title.message}
+                </Text>
               )}
               {/* <Controller
               name='title'
@@ -111,21 +104,11 @@ const TaskEditor = () => {
               </Text>
               <div className='flex flex-row'>
                 <div className='flex flex-row space-x-2'>
-                  <TextField.Root
-                    type='time'
-                    // value={dueTime}
-                    // onChange={(e) => setDueTime(e.target.value)}
-                    {...register('dueTime')}
-                  />
+                  <TextField.Root type='time' {...register('dueTime')} />
                 </div>
 
                 <div className='flex flex-row space-x-2 ml-10'>
-                  <TextField.Root
-                    type='date'
-                    // value={dueDate}
-                    // onChange={(e) => setDueDate(e.target.value)}
-                    {...register('dueDate')}
-                  />
+                  <TextField.Root type='date' {...register('dueDate')} />
                 </div>
               </div>
             </label>
@@ -136,8 +119,6 @@ const TaskEditor = () => {
               <TextArea
                 size='2'
                 className='h-[20rem]'
-                // value={description}
-                // onChange={(e) => setDescription(e.target.value)}
                 {...register('description')}
                 placeholder='Task description...'
               />
@@ -146,7 +127,6 @@ const TaskEditor = () => {
 
           <Flex gap='3' mt='4' justify='end'>
             <Dialog.Close>
-              {/* <Button variant='soft' color='gray' onClick={handleSave}> */}
               <Button variant='soft' color='gray'>
                 Cancel
               </Button>
