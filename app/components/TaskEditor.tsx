@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Callout,
   Dialog,
   Flex,
   IconButton,
@@ -47,6 +48,8 @@ const TaskEditor = () => {
   const router = useRouter();
 
   const { register, control, handleSubmit } = useForm<TaskForm>();
+  const [error, setError] = useState('');
+
   const onSubmit = async (data: TaskForm) => {
     // Combine dueDate and dueTime into a single ISO string
     const dueDateTime = new Date(
@@ -61,28 +64,34 @@ const TaskEditor = () => {
     };
 
     try {
-      const response = await axios.post('/api/tasks', task);
+      await axios.post('/api/tasks', task);
       router.push('/listslibrary/list');
     } catch (error) {
-      console.error('Failed to create task:', error);
+      setError('An unexpected error occurred.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Dialog.Content maxWidth='450px'>
-        <Flex direction='column' gap='3'>
-          <label>
-            <Text as='div' size='2' mb='1' weight='bold'>
-              Title
-            </Text>
-            <TextField.Root
-              // value={title}
-              // onChange={(e) => setTitle(e.target.value)}
-              {...register('title')}
-              placeholder='Task Name'
-            />
-            {/* <Controller
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Dialog.Content maxWidth='450px'>
+          <Flex direction='column' gap='3'>
+            <label>
+              <Text as='div' size='2' mb='1' weight='bold'>
+                Title
+              </Text>
+              <TextField.Root
+                // value={title}
+                // onChange={(e) => setTitle(e.target.value)}
+                {...register('title')}
+                placeholder='Task Name'
+              />
+              {error && (
+                <Callout.Root color='red'>
+                  <Callout.Text>{error}</Callout.Text>
+                </Callout.Root>
+              )}
+              {/* <Controller
               name='title'
               control={control}
               render={({ field }) => (
@@ -95,59 +104,60 @@ const TaskEditor = () => {
                 />
               )}
             /> */}
-          </label>
-          <label>
-            <Text as='div' size='2' mb='1' weight='bold'>
-              Due Time / Date
-            </Text>
-            <div className='flex flex-row'>
-              <div className='flex flex-row space-x-2'>
-                <TextField.Root
-                  type='time'
-                  // value={dueTime}
-                  // onChange={(e) => setDueTime(e.target.value)}
-                  {...register('dueTime')}
-                />
-              </div>
+            </label>
+            <label>
+              <Text as='div' size='2' mb='1' weight='bold'>
+                Due Time / Date
+              </Text>
+              <div className='flex flex-row'>
+                <div className='flex flex-row space-x-2'>
+                  <TextField.Root
+                    type='time'
+                    // value={dueTime}
+                    // onChange={(e) => setDueTime(e.target.value)}
+                    {...register('dueTime')}
+                  />
+                </div>
 
-              <div className='flex flex-row space-x-2 ml-10'>
-                <TextField.Root
-                  type='date'
-                  // value={dueDate}
-                  // onChange={(e) => setDueDate(e.target.value)}
-                  {...register('dueDate')}
-                />
+                <div className='flex flex-row space-x-2 ml-10'>
+                  <TextField.Root
+                    type='date'
+                    // value={dueDate}
+                    // onChange={(e) => setDueDate(e.target.value)}
+                    {...register('dueDate')}
+                  />
+                </div>
               </div>
-            </div>
-          </label>
-          <label>
-            <Text as='div' size='2' mb='1' weight='bold'>
-              Description
-            </Text>
-            <TextArea
-              size='2'
-              className='h-[20rem]'
-              // value={description}
-              // onChange={(e) => setDescription(e.target.value)}
-              {...register('description')}
-              placeholder='Task description...'
-            />
-          </label>
-        </Flex>
+            </label>
+            <label>
+              <Text as='div' size='2' mb='1' weight='bold'>
+                Description
+              </Text>
+              <TextArea
+                size='2'
+                className='h-[20rem]'
+                // value={description}
+                // onChange={(e) => setDescription(e.target.value)}
+                {...register('description')}
+                placeholder='Task description...'
+              />
+            </label>
+          </Flex>
 
-        <Flex gap='3' mt='4' justify='end'>
-          <Dialog.Close>
-            {/* <Button variant='soft' color='gray' onClick={handleSave}> */}
-            <Button variant='soft' color='gray'>
-              Cancel
-            </Button>
-          </Dialog.Close>
-          <Dialog.Close>
-            <Button onClick={handleSubmit(onSubmit)}>Save</Button>
-          </Dialog.Close>
-        </Flex>
-      </Dialog.Content>
-    </form>
+          <Flex gap='3' mt='4' justify='end'>
+            <Dialog.Close>
+              {/* <Button variant='soft' color='gray' onClick={handleSave}> */}
+              <Button variant='soft' color='gray'>
+                Cancel
+              </Button>
+            </Dialog.Close>
+            <Dialog.Close>
+              <Button onClick={handleSubmit(onSubmit)}>Save</Button>
+            </Dialog.Close>
+          </Flex>
+        </Dialog.Content>
+      </form>
+    </div>
   );
 };
 
