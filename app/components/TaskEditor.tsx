@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formTaskSchema } from '../validationSchemas';
 import { z } from 'zod';
+import ErrorMessage from './ErrorMessage';
 
 ///////// Original Interface ///////////
 // interface TaskForm {
@@ -79,11 +80,9 @@ const TaskEditor = () => {
                 Title
               </Text>
               <TextField.Root {...register('title')} placeholder='Task Name' />
-              {errors.title && (
-                <Text className='pt-2' color='red' as='p'>
-                  {errors.title.message}
-                </Text>
-              )}
+
+              <ErrorMessage>{errors.title?.message}</ErrorMessage>
+
               {/* <Controller
               name='title'
               control={control}
