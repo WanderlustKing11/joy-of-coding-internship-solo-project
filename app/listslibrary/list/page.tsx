@@ -45,6 +45,7 @@ const ListPage = () => {
 
   const handleAddTask = () => {
     setEditorOpen(true); // open the editor for a new task
+    // console.log('Editor is:', editorOpen);
   };
 
   const handleCloseEditor = () => {

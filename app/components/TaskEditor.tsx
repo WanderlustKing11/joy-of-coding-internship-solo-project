@@ -12,7 +12,7 @@ import {
 } from '@radix-ui/themes';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
-import { useState } from 'react';
+import { createRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formTaskSchema } from '../validationSchemas';
@@ -32,6 +32,7 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
   const router = useRouter();
   const [error, setError] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
+  // const ref = createRef<HTMLFormElement>(null);
 
   const {
     register,
@@ -59,9 +60,11 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
       setSubmitting(true);
       const response = await axios.post('/api/tasks', task);
       console.log('Task created:', response.data);
-      // router.push('/listslibrary/list');
+      router.push('/listslibrary/list');
+      // ref.current.reset();
       reset();
       onClose();
+      setSubmitting(false);
     } catch (error) {
       setSubmitting(false);
       console.log('Failed to create task:', error);
@@ -73,6 +76,7 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
 
   return (
     <div>
+      {/* <form ref={ref} onSubmit={handleSubmit(onSubmit)}> */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Dialog.Content maxWidth='450px'>
           <Flex direction='column' gap='3'>
@@ -87,20 +91,6 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
               </Text>
               <TextField.Root {...register('title')} placeholder='Task Name' />
               <ErrorMessage>{errors.title?.message}</ErrorMessage>
-
-              {/* <Controller
-              name='title'
-              control={control}
-              render={({ field }) => (
-                <TextField.Root
-                  // value={title}
-                  // onChange={(e) => setTitle(e.target.value)}
-                  // {...register('title')}
-                  placeholder='Task Name'
-                  {...field}
-                />
-              )}
-            /> */}
             </label>
             <label>
               <Text as='div' size='2' mb='1' weight='bold'>
