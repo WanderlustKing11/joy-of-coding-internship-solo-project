@@ -10,12 +10,12 @@ import {
   TextArea,
   TextField,
 } from '@radix-ui/themes';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { formTaskSchema } from '../validationSchemas';
+import { createTaskSchema } from '../validationSchemas';
 import { z } from 'zod';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
@@ -26,10 +26,10 @@ interface TaskProps {
 }
 
 /////////// Zod inferiing types based on our Schema ////////////
-type TaskForm = z.infer<typeof formTaskSchema>;
+type TaskForm = z.infer<typeof createTaskSchema>;
 
 const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
-  const router = useRouter();
+  // const router = useRouter();
   const [error, setError] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -39,10 +39,11 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
     reset,
     formState: { errors },
   } = useForm<TaskForm>({
-    resolver: zodResolver(formTaskSchema),
+    // resolver: zodResolver(formTaskSchema),
   });
 
-  const onSubmit = async (data: TaskForm) => {
+  const onSubmit: SubmitHandler<TaskForm> = async (data: TaskForm) => {
+    console.log('Inside the onSubmit function');
     // Combine dueDate and dueTime into a single ISO string
     const dueDateTime = new Date(
       `${data.dueDate}T${data.dueTime}`
@@ -63,9 +64,10 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
       reset();
       onClose();
     } catch (error) {
-      setSubmitting(false);
       console.log('Failed to create task:', error);
       setError('An unexpected error occurred.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -73,7 +75,8 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+      <form>
         <Dialog.Content maxWidth='450px'>
           <Flex direction='column' gap='3'>
             {error && (
@@ -135,12 +138,15 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
                 Cancel
               </Button>
             </Dialog.Close>
-            <Dialog.Close>
-              <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
-                Save
-                {isSubmitting && <Spinner />}
-              </Button>
-            </Dialog.Close>
+            {/* <Dialog.Close> */}
+            <Button
+              onClick={() => handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+            >
+              Save
+              {isSubmitting && <Spinner />}
+            </Button>
+            {/* </Dialog.Close> */}
           </Flex>
         </Dialog.Content>
       </form>
