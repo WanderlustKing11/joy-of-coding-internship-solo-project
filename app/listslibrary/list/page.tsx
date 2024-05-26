@@ -1,7 +1,5 @@
 'use client';
 
-// import { TaskDataProps, taskData } from '@/app/data/taskData';
-import { createTaskSchema } from '@/app/validationSchemas';
 import SelectSort from '@/app/components/SelectSort';
 import Task from '@/app/components/Task';
 import TaskEditor from '@/app/components/TaskEditor';
@@ -9,14 +7,11 @@ import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { fetchTaskSchema } from '@/app/validationSchemas';
 import { z } from 'zod';
+import Link from 'next/link';
 
-type TaskData = z.infer<typeof createTaskSchema>;
-
-// const fetchTasks = async () => {
-//   const response = await axios.get('/api/tasks');
-//   return response.data;
-// };
+type TaskData = z.infer<typeof fetchTaskSchema>;
 
 const ListPage = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -34,14 +29,13 @@ const ListPage = () => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      const response = await axios.get('/api/tasks');
-      setTasks(response.data);
-    };
     fetchTasks();
   }, []);
 
-  // const Tasks = await fetchTasks();
+  const fetchTasks = async () => {
+    const response = await axios.get('/api/tasks');
+    setTasks(response.data); // return?
+  };
 
   const handleAddTask = () => {
     setEditorOpen(true); // open the editor for a new task
@@ -80,7 +74,7 @@ const ListPage = () => {
           <ul>
             {tasks.map((tasks: TaskData) => (
               <Task
-                key={tasks.id}
+                key={tasks.title}
                 task={tasks.title}
                 dueDate={tasks.dueDateTime}
                 // toggleOpen={toggleOpen}
@@ -93,6 +87,11 @@ const ListPage = () => {
           <Dialog.Trigger>
             <Button onClick={handleAddTask}>ADD NEW TASK</Button>
           </Dialog.Trigger>
+
+          {/* ALTERNATE TASK EDITOR PAGE */}
+          {/* <Button>
+            <Link href='/listslibrary/list/new'>New Task</Link>
+          </Button> */}
         </div>
         <TaskEditor isOpen={editorOpen} onClose={handleCloseEditor} />
       </Dialog.Root>

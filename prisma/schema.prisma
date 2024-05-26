@@ -19,6 +19,8 @@ model Task {
   dueDateTime DateTime
   description String   @db.Text
   status      Status   @default(INCOMPLETE)
+  // author      User     @relation(fields: [authorId], references: [id])
+  // authorId    Int
 }
 
 enum Status {
