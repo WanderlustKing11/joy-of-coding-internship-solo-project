@@ -5,20 +5,19 @@ import {
   Callout,
   Dialog,
   Flex,
-  IconButton,
   Text,
   TextArea,
   TextField,
 } from '@radix-ui/themes';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createTaskSchema } from '../validationSchemas';
+import { formTaskSchema } from '../validationSchemas';
 import { z } from 'zod';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
+import { useRouter } from 'next/navigation';
 
 interface TaskProps {
   onClose: () => void;
@@ -26,10 +25,10 @@ interface TaskProps {
 }
 
 /////////// Zod inferiing types based on our Schema ////////////
-type TaskForm = z.infer<typeof createTaskSchema>;
+type TaskFormType = z.infer<typeof formTaskSchema>;
 
 const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
-  // const router = useRouter();
+  const router = useRouter();
   const [error, setError] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -38,11 +37,11 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<TaskForm>({
-    // resolver: zodResolver(formTaskSchema),
+  } = useForm<TaskFormType>({
+    resolver: zodResolver(formTaskSchema),
   });
 
-  const onSubmit: SubmitHandler<TaskForm> = async (data: TaskForm) => {
+  const onSubmit = async (data: TaskFormType) => {
     console.log('Inside the onSubmit function');
     // Combine dueDate and dueTime into a single ISO string
     const dueDateTime = new Date(
@@ -60,9 +59,9 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
       setSubmitting(true);
       const response = await axios.post('/api/tasks', task);
       console.log('Task created:', response.data);
-      // router.push('/listslibrary/list');
       reset();
       onClose();
+      router.push('/listslibrary/list');
     } catch (error) {
       console.log('Failed to create task:', error);
       setError('An unexpected error occurred.');
@@ -74,83 +73,64 @@ const TaskEditor: React.FC<TaskProps> = ({ onClose, isOpen }) => {
   if (!isOpen) return null;
 
   return (
-    <div>
-      {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-      <form>
-        <Dialog.Content maxWidth='450px'>
-          <Flex direction='column' gap='3'>
-            {error && (
-              <Callout.Root color='red'>
-                <Callout.Text>{error}</Callout.Text>
-              </Callout.Root>
-            )}
-            <label>
-              <Text as='div' size='2' mb='1' weight='bold'>
-                Title
-              </Text>
-              <TextField.Root {...register('title')} placeholder='Task Name' />
-              <ErrorMessage>{errors.title?.message}</ErrorMessage>
-
-              {/* <Controller
-              name='title'
-              control={control}
-              render={({ field }) => (
-                <TextField.Root
-                  // value={title}
-                  // onChange={(e) => setTitle(e.target.value)}
-                  // {...register('title')}
-                  placeholder='Task Name'
-                  {...field}
-                />
-              )}
-            /> */}
-            </label>
-            <label>
-              <Text as='div' size='2' mb='1' weight='bold'>
-                Due Time / Date
-              </Text>
-              <div className='flex flex-row'>
-                <div className='flex flex-row space-x-2'>
-                  <TextField.Root type='time' {...register('dueTime')} />
-                </div>
-
-                <div className='flex flex-row space-x-2 ml-10'>
-                  <TextField.Root type='date' {...register('dueDate')} />
-                </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form> */}
+      <Dialog.Content maxWidth='450px'>
+        <Flex direction='column' gap='3'>
+          {error && (
+            <Callout.Root color='red'>
+              <Callout.Text>{error}</Callout.Text>
+            </Callout.Root>
+          )}
+          <label>
+            <Text as='div' size='2' mb='1' weight='bold'>
+              Title
+            </Text>
+            <TextField.Root {...register('title')} placeholder='Task Name' />
+            <ErrorMessage>{errors.title?.message}</ErrorMessage>
+          </label>
+          <label>
+            <Text as='div' size='2' mb='1' weight='bold'>
+              Due Time / Date
+            </Text>
+            <div className='flex flex-row'>
+              <div className='flex flex-row space-x-2'>
+                <TextField.Root type='time' {...register('dueTime')} />
               </div>
-            </label>
-            <label>
-              <Text as='div' size='2' mb='1' weight='bold'>
-                Description
-              </Text>
-              <TextArea
-                size='2'
-                className='h-[20rem]'
-                {...register('description')}
-                placeholder='Task description...'
-              />
-            </label>
-          </Flex>
 
-          <Flex gap='3' mt='4' justify='end'>
-            <Dialog.Close>
-              <Button variant='soft' color='gray'>
-                Cancel
-              </Button>
-            </Dialog.Close>
-            {/* <Dialog.Close> */}
-            <Button
-              onClick={() => handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-            >
-              Save
-              {isSubmitting && <Spinner />}
+              <div className='flex flex-row space-x-2 ml-10'>
+                <TextField.Root type='date' {...register('dueDate')} />
+              </div>
+            </div>
+          </label>
+          <label>
+            <Text as='div' size='2' mb='1' weight='bold'>
+              Description
+            </Text>
+            <TextArea
+              size='2'
+              className='h-[20rem]'
+              {...register('description')}
+              placeholder='Task description...'
+            />
+          </label>
+        </Flex>
+
+        <Flex gap='3' mt='4' justify='end'>
+          <Dialog.Close>
+            <Button variant='soft' color='gray'>
+              Cancel
             </Button>
-            {/* </Dialog.Close> */}
-          </Flex>
-        </Dialog.Content>
-      </form>
-    </div>
+          </Dialog.Close>
+          {/* <Dialog.Close> */}
+          <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+            Save
+            {isSubmitting && <Spinner />}
+          </Button>
+          {/* </Dialog.Close> */}
+        </Flex>
+      </Dialog.Content>
+    </form>
   );
 };
 

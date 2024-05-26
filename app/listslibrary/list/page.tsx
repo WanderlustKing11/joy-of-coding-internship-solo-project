@@ -83,14 +83,16 @@ const ListPage = () => {
           </ul>
         </div>
         <div className='mt-16 mb-10'>
-          {/* <Dialog.Trigger>
+          <Dialog.Trigger>
             <Button onClick={handleAddTask}>ADD NEW TASK</Button>
-          </Dialog.Trigger> */}
-          <Button>
+          </Dialog.Trigger>
+
+          {/* ALTERNATE TASK EDITOR PAGE */}
+          {/* <Button>
             <Link href='/listslibrary/list/new'>New Task</Link>
-          </Button>
+          </Button> */}
         </div>
-        {/* <TaskEditor isOpen={editorOpen} onClose={handleCloseEditor} /> */}
+        <TaskEditor isOpen={editorOpen} onClose={handleCloseEditor} />
       </Dialog.Root>
     </div>
   );

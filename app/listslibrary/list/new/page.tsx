@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formTaskSchema } from '@/app/validationSchemas';
@@ -50,8 +50,6 @@ const NewTaskPage = () => {
       dueDateTime,
       description: data.description,
     };
-
-    // const apiData = transformToAPISchema(data);
 
     try {
       const response = await axios.post('/api/tasks', task);
