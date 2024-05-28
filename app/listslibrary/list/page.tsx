@@ -45,6 +45,7 @@ const ListPage = () => {
   const handleDeleteTask = async (id: number) => {
     try {
       await axios.delete(`/api/tasks/${id}`);
+      fetchTasks();
     } catch (error) {
       console.log('Failed to delete task:', error);
     }
