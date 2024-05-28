@@ -10,7 +10,7 @@ export const formTaskSchema = z.object({
 
 // Schema for POST request to server-side
 export const createTaskSchema = z.object({
-  id: z.number(),
+  // id: z.number(),
   title: z.string().min(1, 'Title is required.').max(255),
   dueDateTime: z.string(),
   description: z.string()
@@ -18,7 +18,7 @@ export const createTaskSchema = z.object({
 
 // Schema for GET request in List
 export const fetchTaskSchema = z.object({
-  // id: z.number(),
+  id: z.number(),
   title: z.string(),
   dueDateTime: z.string(),
 });

@@ -11,6 +11,7 @@ import { IconButton } from '@radix-ui/themes';
 interface TaskButtonsProps {
   onCheckClick: () => void;
   isCompleted: boolean;
+  onDelete: () => void;
 }
 
 const variants = {
@@ -21,6 +22,7 @@ const variants = {
 const TaskManButtons: React.FC<TaskButtonsProps> = ({
   onCheckClick,
   isCompleted,
+  onDelete,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,14 +48,14 @@ const TaskManButtons: React.FC<TaskButtonsProps> = ({
         className='z-0'
       >
         <div className='z-0'>
-          <IconButton radius='none' color='crimson' onClick={onCheckClick}>
+          <IconButton radius='none' color='green' onClick={onCheckClick}>
             {isCompleted ? (
               <CheckIcon width='18' height='18' />
             ) : (
               <SquareIcon width='18' height='18' />
             )}
           </IconButton>
-          <IconButton radius='none' color='indigo'>
+          <IconButton radius='none' color='ruby' onClick={onDelete}>
             <TrashIcon width='18' height='18' />
           </IconButton>
         </div>

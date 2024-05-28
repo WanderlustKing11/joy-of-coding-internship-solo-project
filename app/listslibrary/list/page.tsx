@@ -42,6 +42,14 @@ const ListPage = () => {
     // console.log('Editor is:', editorOpen);
   };
 
+  const handleDeleteTask = async (id: number) => {
+    try {
+      await axios.delete(`/api/tasks/${id}`);
+    } catch (error) {
+      console.log('Failed to delete task:', error);
+    }
+  };
+
   const handleCloseEditor = () => {
     setEditorOpen(false); // Close the editor
   };
@@ -72,11 +80,12 @@ const ListPage = () => {
       <Dialog.Root>
         <div className='w-full'>
           <ul>
-            {tasks.map((tasks: TaskData) => (
+            {tasks.map((task: TaskData) => (
               <Task
-                key={tasks.title}
-                task={tasks.title}
-                dueDate={tasks.dueDateTime}
+                key={task.id}
+                task={task.title}
+                dueDate={task.dueDateTime}
+                onDelete={() => handleDeleteTask(task.id)}
                 // toggleOpen={toggleOpen}
                 // isOpen={isOpen}
               />

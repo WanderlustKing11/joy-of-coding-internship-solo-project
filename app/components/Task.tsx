@@ -8,11 +8,12 @@ interface TaskProps {
   // id: number;
   task: string;
   dueDate: string;
+  onDelete: () => void;
   // toggleOpen: () => void;
   // isOpen: boolean;
 }
 
-const Task: React.FC<TaskProps> = ({ task, dueDate }) => {
+const Task: React.FC<TaskProps> = ({ task, dueDate, onDelete }) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -42,6 +43,7 @@ const Task: React.FC<TaskProps> = ({ task, dueDate }) => {
       <TaskManButtons
         isCompleted={isCompleted}
         onCheckClick={handleComplete}
+        onDelete={onDelete}
         // toggleOpen={toggleOpen}
         // isOpen={isOpen}
       />
