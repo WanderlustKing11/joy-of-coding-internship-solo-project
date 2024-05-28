@@ -1,58 +1,64 @@
 // import prisma from '@/prisma/client';
 import { PrismaClient } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { NextResponse } from 'next/server';
+// import { error } from 'console';
+// import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-export async function GET(request: NextApiRequest, { params}: {params: { id: string } }) {
+// Fetching one task by ID
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+
   const task = await prisma.task.findUnique({
     where: {
       id: parseInt(params.id, 10),
     }
   });
+
+  if (!task) {
+    return NextResponse.json({error: "Task not found"}, { status: 404 });
+  }
+
   return NextResponse.json(task);
 }
 
+// Deleting one task by ID
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  
+  // check if task exists
+  const taskId = await prisma.task.findUnique({
+    where: { 
+      id: parseInt(params.id, 10),
+    },
+  })
 
-// export async function DELETE(
-//   req: NextApiRequest, 
-//   res: NextApiResponse
-// ) {
-//   if (req.method === 'DELETE') {
-//     // Parsing the ID from the URL parameter
-//     const { id } = req.query;
-//     const taskId = parseInt(id as string, 10);
+  if (!taskId) {
+    return NextResponse.json( {error: "Task not found"}, { status: 404 });
+  }
 
-//     if (isNaN(taskId)) {
-//       return res.status(400).json({ error: "Invalid task ID" });
-//     }
+  const deleteTask = await prisma.task.delete({
+    where: { id: parseInt(params.id),
+    },
+  });
 
-//     try {
-//       // Check if the task exists
-//       const task = await prisma.task.findUnique({
-//         where: { id: taskId },
-//       });
+  return NextResponse.json(deleteTask);
+}
 
-//       if (!task) {
-//         return res.status(404).json({ error: "Task not found" });
-//       }
 
-//       // Delete the task
-//       await prisma.task.delete({
-//         where: { id: taskId },
-//       });
+// Updating a task by ID
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  const body = await request.json();
 
-//       return res.status(200).json({ message: "Task deleted successfully" });
-//     } catch (error: unknown) {
-//       if (error instanceof Error) {
-//         return res.status(500).json({ message: "Failed to delete task", error: error.message });
-//       } else {
-//         return res.status(500).json({ message: "Failed to delete task due to an unexpected error" });
-//       }
-//     }
-//   } else {
-//     res.setHeader('Allow', ['DELETE']);
-//     res.status(405).end(`Method ${req.method} Not Allowed`);
-//   }
-// }
+  const updateTask = await prisma.task.update({
+    where: {
+      id: parseInt(params.id)
+    },
+    data: {
+      title: body.title,
+      dueDateTime: body.dueDateTime,
+      description: body.description,
+      status: body.status,
+    }
+  })
+  return NextResponse.json(updateTask);
+}
