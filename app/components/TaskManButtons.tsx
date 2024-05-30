@@ -20,9 +20,9 @@ const variants = {
 };
 
 const TaskManButtons: React.FC<TaskButtonsProps> = ({
-  onCheckClick,
-  isCompleted,
   onDelete,
+  isCompleted,
+  onCheckClick,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 

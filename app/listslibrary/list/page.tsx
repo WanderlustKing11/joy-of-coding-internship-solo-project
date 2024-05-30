@@ -26,7 +26,8 @@ const ListPage = () => {
   //   }
   // };
   const [editorOpen, setEditorOpen] = useState(false);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<TaskData[]>([]);
+  // const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     fetchTasks();
@@ -34,7 +35,7 @@ const ListPage = () => {
 
   const fetchTasks = async () => {
     const response = await axios.get('/api/tasks');
-    setTasks(response.data); // return?
+    setTasks(response.data);
   };
 
   const handleAddTask = () => {
@@ -48,6 +49,21 @@ const ListPage = () => {
       fetchTasks();
     } catch (error) {
       console.log('Failed to delete task:', error);
+    }
+  };
+
+  const handleToggleCompletion = async (id: number) => {
+    try {
+      const response = await axios.patch(`/api/tasks/${id}`);
+      const updatedTask = response.data;
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === id ? { ...task, status: updatedTask.status } : task
+        )
+      );
+      console.log(response.data.status);
+    } catch (error) {
+      console.error('Failed to update task:', error);
     }
   };
 
@@ -86,6 +102,8 @@ const ListPage = () => {
                 key={task.id}
                 task={task.title}
                 dueDate={task.dueDateTime}
+                isCompleted={task.status === 'COMPLETE'}
+                onCheckClick={() => handleToggleCompletion(task.id)}
                 onDelete={() => handleDeleteTask(task.id)}
                 // toggleOpen={toggleOpen}
                 // isOpen={isOpen}

@@ -47,18 +47,23 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
 // Updating a task by ID
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-  const body = await request.json();
+  // const body = await request.json();
 
-  const updateTask = await prisma.task.update({
-    where: {
-      id: parseInt(params.id)
-    },
-    data: {
-      title: body.title,
-      dueDateTime: body.dueDateTime,
-      description: body.description,
-      status: body.status,
-    }
-  })
-  return NextResponse.json(updateTask);
+  const taskId = parseInt(params.id);
+
+  const currentTask = await prisma.task.findUnique({
+    where: { id: taskId }
+  });
+
+  if (!currentTask) {
+    return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+  }
+
+  const newStatus = currentTask.status === 'COMPLETE' ? 'INCOMPLETE' : 'COMPLETE';
+
+  const updatedStatus = await prisma.task.update({
+    where: { id: taskId },
+    data: { status: newStatus },
+  });
+  return NextResponse.json(updatedStatus);
 }

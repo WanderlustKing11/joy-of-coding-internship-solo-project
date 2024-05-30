@@ -21,4 +21,5 @@ export const fetchTaskSchema = z.object({
   id: z.number(),
   title: z.string(),
   dueDateTime: z.string(),
+  status: z.string()
 });
