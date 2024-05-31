@@ -14,20 +14,10 @@ import Link from 'next/link';
 type TaskData = z.infer<typeof fetchTaskSchema>;
 
 const ListPage = () => {
-  // const [isOpen, setIsOpen] = useState(false);
-
-  // const toggleOpen = () => {
-  //   setIsOpen(!isOpen);
-  // };
-
-  // const handleClose = () => {
-  //   if (isOpen) {
-  //     setIsOpen(false);
-  //   }
-  // };
+  const [listEditOpen, setListEditOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskData[]>([]);
-  // const [isCompleted, setIsCompleted] = useState(false);
+  const [sortOrder, setSortOrder] = useState('oldest');
 
   useEffect(() => {
     fetchTasks();
@@ -38,15 +28,10 @@ const ListPage = () => {
     setTasks(response.data);
   };
 
-  const handleAddTask = () => {
-    setEditorOpen(true); // open the editor for a new task
-    // console.log('Editor is:', editorOpen);
-  };
-
   const handleDeleteTask = async (id: number) => {
     try {
       await axios.delete(`/api/tasks/${id}`);
-      fetchTasks();
+      await fetchTasks();
     } catch (error) {
       console.log('Failed to delete task:', error);
     }
@@ -65,6 +50,40 @@ const ListPage = () => {
     } catch (error) {
       console.error('Failed to update task:', error);
     }
+  };
+
+  const sortHandlers: { [key: string]: (tasks: TaskData[]) => TaskData[] } = {
+    newest: (tasks) => tasks.slice().sort((a, b) => b.id - a.id),
+    oldest: (tasks) => tasks.slice().sort((a, b) => a.id - b.id),
+    alphabetical: (tasks) =>
+      tasks.slice().sort((a, b) => a.title.localeCompare(b.title)),
+    'due date': (tasks) =>
+      tasks
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.dueDateTime).getTime() -
+            new Date(b.dueDateTime).getTime()
+        ),
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+  };
+
+  const sortedTasks = sortHandlers[sortOrder](tasks);
+
+  const handleOpenListEdit = () => {
+    setListEditOpen(true);
+  };
+
+  const handleCloseListEdit = () => {
+    setListEditOpen(false);
+  };
+
+  const handleAddTask = () => {
+    setEditorOpen(true); // open the editor for a new task
+    // console.log('Editor is:', editorOpen);
   };
 
   const handleCloseEditor = () => {
@@ -86,18 +105,17 @@ const ListPage = () => {
         </span>
       </div>
 
-      <SelectSort className='w-full flex justify-start'>
-        <Select.Item value='oldest'>oldest</Select.Item>
-        <Select.Item value='newest'>newest</Select.Item>
-        <Select.Item value='alphabetical'>alphabetical</Select.Item>
-        <Select.Item value='due date'>due date</Select.Item>
-      </SelectSort>
+      <SelectSort
+        className='w-full flex justify-start'
+        onSortChange={handleSortChange}
+        sortOptions={Object.keys(sortHandlers)}
+      />
 
       {/* TASKS */}
       <Dialog.Root>
         <div className='w-full'>
           <ul>
-            {tasks.map((task: TaskData) => (
+            {sortedTasks.map((task: TaskData) => (
               <Task
                 key={task.id}
                 task={task.title}
