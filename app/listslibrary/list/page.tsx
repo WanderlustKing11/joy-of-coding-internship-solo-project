@@ -10,10 +10,12 @@ import axios from 'axios';
 import { fetchTaskSchema } from '@/app/validationSchemas';
 import { z } from 'zod';
 import Link from 'next/link';
+import ListPopup from '@/app/components/ListPopup';
 
 type TaskData = z.infer<typeof fetchTaskSchema>;
 
 const ListPage = () => {
+  const [listTitle, setListTitle] = useState('Task List');
   const [listEditOpen, setListEditOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskData[]>([]);
@@ -67,6 +69,11 @@ const ListPage = () => {
         ),
   };
 
+  const handleUpdateListTitle = (newTitle: string) => {
+    setListTitle(newTitle);
+    handleCloseListEdit();
+  };
+
   const handleSortChange = (value: string) => {
     setSortOrder(value);
   };
@@ -96,14 +103,25 @@ const ListPage = () => {
       // onClick={handleClose}
     >
       {/* TITLE */}
-      <div className='flex flex-row space-x-10 group'>
-        <h1 className='text-3xl mb-14 group-hover:opacity-75'>List Title</h1>
-        <span className='opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-          <IconButton size='1' color='gray' aria-label='Edit list title'>
-            <Pencil2Icon width='18' height='18' />
-          </IconButton>
-        </span>
-      </div>
+      <Dialog.Root open={listEditOpen} onOpenChange={setListEditOpen}>
+        <div className='flex flex-row space-x-10 group'>
+          <h1 className='text-3xl mb-14 group-hover:opacity-75'>{listTitle}</h1>
+          <span className='opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+            <Dialog.Trigger>
+              <IconButton
+                size='1'
+                color='gray'
+                onClick={handleOpenListEdit}
+                aria-label='Edit list title'
+              >
+                <Pencil2Icon width='18' height='18' />
+              </IconButton>
+            </Dialog.Trigger>
+          </span>
+        </div>
+
+        <ListPopup onUpdateListTitle={handleUpdateListTitle} />
+      </Dialog.Root>
 
       <SelectSort
         className='w-full flex justify-start'

@@ -1,23 +1,54 @@
+'use client';
+
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import Link from 'next/link';
 import { TrashIcon } from '@radix-ui/react-icons';
 import SelectSort from '../components/SelectSort';
 import ListPopup from '../components/ListPopup';
+import { fetchTaskSchema } from '../validationSchemas';
+import { z } from 'zod';
+import { useState } from 'react';
+
+type ListData = z.infer<typeof fetchTaskSchema>;
 
 const ListsLibraryPage = () => {
+  const [sortOrder, setSortOrder] = useState('oldest');
+  const [lists, setLists] = useState<ListData[]>([]);
+
   const listStyle =
     'grid grid-cols-6 gap-4 py-2 pl-4 rounded hover:bg-blue-950 hover:text-indigo-300';
+
+  const sortHandlers: { [key: string]: (lists: ListData[]) => ListData[] } = {
+    newest: (lists) => lists.slice().sort((a, b) => b.id - a.id),
+    oldest: (lists) => lists.slice().sort((a, b) => a.id - b.id),
+    alphabetical: (lists) =>
+      lists.slice().sort((a, b) => a.title.localeCompare(b.title)),
+    'due date': (lists) =>
+      lists
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.dueDateTime).getTime() -
+            new Date(b.dueDateTime).getTime()
+        ),
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+  };
+
+  const sortedLists = sortHandlers[sortOrder](lists);
 
   return (
     <div className='w-full h-full'>
       <div className='flex flex-row'>
         {/* TITLE */}
         <h2 className='text-3xl flex flex-wrap mb-14'>Lists Library</h2>
-        <SelectSort className='ml-14'>
-          <Select.Item value='oldest'>oldest</Select.Item>
-          <Select.Item value='newest'>newest</Select.Item>
-          <Select.Item value='alphabetical'>alphabetical</Select.Item>
-        </SelectSort>
+        <SelectSort
+          className='w-full flex justify-start'
+          onSortChange={handleSortChange}
+          sortOptions={Object.keys(sortHandlers)}
+        />
       </div>
 
       {/* lISTS */}
