@@ -11,27 +11,23 @@ import {
 } from '@radix-ui/themes';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { editTaskSchema, formTaskSchema } from '../validationSchemas';
+import { formTaskSchema } from '../validationSchemas';
 import { z } from 'zod';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
-import { useRouter } from 'next/navigation';
 
-interface EditTaskDialogProps {
+interface TaskProps {
   onClose: () => void;
   isOpen: boolean;
-  taskData: z.infer<typeof editTaskSchema> | null;
 }
 
+/////////// Zod inferiing types based on our Schema ////////////
 type TaskFormType = z.infer<typeof formTaskSchema>;
 
-const TaskEditor: React.FC<EditTaskDialogProps> = ({
-  onClose,
-  isOpen,
-  taskData,
-}) => {
+const TaskCreator: React.FC<TaskProps> = ({ onClose, isOpen }) => {
   const router = useRouter();
   const [error, setError] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
@@ -40,29 +36,19 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<TaskFormType>({
     resolver: zodResolver(formTaskSchema),
   });
 
-  useEffect(() => {
-    if (taskData) {
-      const dueDateTime = new Date(taskData.dueDateTime);
-      const dueDate = dueDateTime.toISOString().split('T')[0];
-      const dueTime = dueDateTime.toTimeString().split(' ')[0];
-      setValue('title', taskData.title);
-      setValue('dueDate', dueDate);
-      setValue('dueTime', dueTime);
-      setValue('description', taskData.description);
-    }
-  }, [taskData, setValue]);
-
   const onSubmit = async (data: TaskFormType) => {
+    console.log('Inside the onSubmit function');
+    // Combine dueDate and dueTime into a single ISO string
     const dueDateTime = new Date(
       `${data.dueDate}T${data.dueTime}`
     ).toISOString();
 
+    // task object with the combined date and time
     const task = {
       title: data.title,
       dueDateTime,
@@ -71,12 +57,13 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
 
     try {
       setSubmitting(true);
-      const response = await axios.patch(`/api/tasks/${taskData?.id}`, task);
-      console.log('Task updated:', response.data);
+      const response = await axios.post('/api/tasks', task);
+      console.log('Task created:', response.data);
+      reset();
       onClose();
       router.push('/listslibrary/list');
     } catch (error) {
-      console.log('Failed to update task:', error);
+      console.log('Failed to create task:', error);
       setError('An unexpected error occurred.');
     } finally {
       setSubmitting(false);
@@ -87,6 +74,7 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form> */}
       <Dialog.Content maxWidth='450px'>
         <Flex direction='column' gap='3'>
           {error && (
@@ -134,14 +122,16 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
               Cancel
             </Button>
           </Dialog.Close>
+          {/* <Dialog.Close> */}
           <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
             Save
             {isSubmitting && <Spinner />}
           </Button>
+          {/* </Dialog.Close> */}
         </Flex>
       </Dialog.Content>
     </form>
   );
 };
 
-export default TaskEditor;
+export default TaskCreator;

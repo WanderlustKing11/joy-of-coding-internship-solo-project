@@ -1,16 +1,16 @@
 'use client';
 
-import SelectSort from '@/app/components/SelectSort';
-import Task from '@/app/components/Task';
-import TaskEditor from '@/app/components/TaskEditor';
-import { Pencil2Icon } from '@radix-ui/react-icons';
-import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
+import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import axios from 'axios';
 import { fetchTaskSchema } from '@/app/validationSchemas';
 import { z } from 'zod';
-import Link from 'next/link';
+import { Pencil2Icon } from '@radix-ui/react-icons';
 import ListPopup from '@/app/components/ListPopup';
+import SelectSort from '@/app/components/SelectSort';
+import Task from '@/app/components/Task';
+import TaskCreator from '@/app/components/TaskCreator';
+import TaskEditor from '@/app/components/TaskEditor';
 
 type TaskData = z.infer<typeof fetchTaskSchema>;
 
@@ -18,8 +18,10 @@ const ListPage = () => {
   const [listTitle, setListTitle] = useState('Task List');
   const [listEditOpen, setListEditOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [editTaskOpen, setEditTaskOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [sortOrder, setSortOrder] = useState('oldest');
+  const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
 
   useEffect(() => {
     fetchTasks();
@@ -41,11 +43,18 @@ const ListPage = () => {
 
   const handleToggleCompletion = async (id: number) => {
     try {
-      const response = await axios.patch(`/api/tasks/${id}`);
-      const updatedTask = response.data;
+      const taskToUpdate = tasks.find((task) => task.id === id);
+      if (!taskToUpdate) return;
+
+      const updatedStatus =
+        taskToUpdate.status === 'COMPLETE' ? 'INCOMPLETE' : 'COMPLETE';
+      const response = await axios.patch(`/api/tasks/${id}`, {
+        status: updatedStatus,
+      });
+
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task.id === id ? { ...task, status: updatedTask.status } : task
+          task.id === id ? { ...task, status: response.data.status } : task
         )
       );
       console.log(response.data.status);
@@ -97,6 +106,25 @@ const ListPage = () => {
     setEditorOpen(false); // Close the editor
   };
 
+  // const handleEditTask = (task: TaskData) => {
+  //   const transformedTask = {
+  //     ...task,
+  //     dueDateTime: new Date(task.dueDateTime).toISOString(),
+  //   };
+  //   setCurrentTask(transformedTask);
+  //   setEditTaskOpen(true);
+  // };
+
+  const handleEditTask = (task: TaskData) => {
+    setCurrentTask(task);
+    setEditTaskOpen(true);
+  };
+
+  const handleCloseEditTask = () => {
+    setEditTaskOpen(false);
+    setCurrentTask(null);
+  };
+
   return (
     <div
       className='w-full h-full flex flex-col items-center'
@@ -134,16 +162,19 @@ const ListPage = () => {
         <div className='w-full'>
           <ul>
             {sortedTasks.map((task: TaskData) => (
-              <Task
-                key={task.id}
-                task={task.title}
-                dueDate={task.dueDateTime}
-                isCompleted={task.status === 'COMPLETE'}
-                onCheckClick={() => handleToggleCompletion(task.id)}
-                onDelete={() => handleDeleteTask(task.id)}
-                // toggleOpen={toggleOpen}
-                // isOpen={isOpen}
-              />
+              <Dialog.Trigger key={task.id}>
+                <div>
+                  <Task
+                    // key={task.id}
+                    task={task.title}
+                    dueDate={task.dueDateTime}
+                    isCompleted={task.status === 'COMPLETE'}
+                    onCheckClick={() => handleToggleCompletion(task.id)}
+                    onDelete={() => handleDeleteTask(task.id)}
+                    onClick={() => handleEditTask(task)}
+                  />
+                </div>
+              </Dialog.Trigger>
             ))}
           </ul>
         </div>
@@ -157,7 +188,12 @@ const ListPage = () => {
             <Link href='/listslibrary/list/new'>New Task</Link>
           </Button> */}
         </div>
-        <TaskEditor isOpen={editorOpen} onClose={handleCloseEditor} />
+        <TaskCreator isOpen={editorOpen} onClose={handleCloseEditor} />
+        <TaskEditor
+          isOpen={editTaskOpen}
+          onClose={handleCloseEditTask}
+          taskData={currentTask}
+        />
       </Dialog.Root>
     </div>
   );

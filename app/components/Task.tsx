@@ -10,6 +10,7 @@ interface TaskProps {
   isCompleted: boolean;
   onCheckClick: () => void;
   onDelete: () => void;
+  onClick: () => void;
   // toggleOpen: () => void;
   // isOpen: boolean;
 }
@@ -20,6 +21,7 @@ const Task: React.FC<TaskProps> = ({
   isCompleted,
   onCheckClick,
   onDelete,
+  onClick,
 }) => {
   const taskStyle = `grid grid-cols-3 gap-4 my-4 py-2 items-center border-2 border-solid border-blue-950 rounded-xl border-b last:border-b-2 hover:bg-blue-950 hover:text-indigo-300 col-span-2 ${
     isCompleted ? 'bg-slate-900 text-slate-600' : 'border-solid border-zinc-500'
@@ -28,7 +30,10 @@ const Task: React.FC<TaskProps> = ({
   return (
     <div
       className='w-full max-w-[60rem] grid grid-cols-[auto,1fr,auto] items-center gap-4'
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
     >
       <Dialog.Trigger>
         <li className={taskStyle}>
