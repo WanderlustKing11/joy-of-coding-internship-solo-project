@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import axios from 'axios';
-import { fetchTaskSchema } from '@/app/validationSchemas';
 import { z } from 'zod';
+import { fetchTaskSchema } from '@/app/validationSchemas';
+import { formatDueDateTime } from '@/app/utils/dateFormatter';
 import { Pencil2Icon } from '@radix-ui/react-icons';
 import ListPopup from '@/app/components/ListPopup';
 import SelectSort from '@/app/components/SelectSort';
@@ -178,7 +179,7 @@ const ListPage = () => {
                   <Task
                     // key={task.id}
                     task={task.title}
-                    dueDate={task.dueDateTime}
+                    dueDate={formatDueDateTime(task.dueDateTime)}
                     isCompleted={task.status === 'COMPLETE'}
                     onCheckClick={() => handleToggleCompletion(task.id)}
                     onDelete={() => handleDeleteTask(task.id)}
