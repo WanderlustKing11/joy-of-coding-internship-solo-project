@@ -92,6 +92,11 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
     }
   };
 
+  const handleCancel = () => {
+    reset();
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -139,7 +144,7 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
 
         <Flex gap='3' mt='4' justify='end'>
           <Dialog.Close>
-            <Button variant='soft' color='gray'>
+            <Button onClick={handleCancel} variant='soft' color='gray'>
               Cancel
             </Button>
           </Dialog.Close>

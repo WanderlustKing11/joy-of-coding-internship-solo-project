@@ -22,12 +22,12 @@ import Spinner from './Spinner';
 interface TaskProps {
   onClose: () => void;
   isOpen: boolean;
-  onTaskCreated: (newTask: FetchTaskType) => void;
+  onTaskCreated: (newTask: any) => void;
 }
 
 /////////// Zod inferiing types based on our Schema ////////////
 type TaskFormType = z.infer<typeof formTaskSchema>;
-type FetchTaskType = z.infer<typeof fetchTaskSchema>;
+// type FetchTaskType = z.infer<typeof fetchTaskSchema>;
 
 const TaskCreator: React.FC<TaskProps> = ({
   onClose,
@@ -46,6 +46,12 @@ const TaskCreator: React.FC<TaskProps> = ({
   } = useForm<TaskFormType>({
     resolver: zodResolver(formTaskSchema),
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      reset();
+    }
+  }, [isOpen, reset]);
 
   const onSubmit = async (data: TaskFormType) => {
     console.log('Inside the onSubmit function');
@@ -68,13 +74,18 @@ const TaskCreator: React.FC<TaskProps> = ({
       reset();
       onClose();
       onTaskCreated(response.data);
-      // router.push('/listslibrary/list');
+      router.push('/listslibrary/list');
     } catch (error) {
       console.log('Failed to create task:', error);
       setError('An unexpected error occurred.');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleCancel = () => {
+    reset();
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -125,7 +136,7 @@ const TaskCreator: React.FC<TaskProps> = ({
 
         <Flex gap='3' mt='4' justify='end'>
           <Dialog.Close>
-            <Button variant='soft' color='gray'>
+            <Button onClick={handleCancel} variant='soft' color='gray'>
               Cancel
             </Button>
           </Dialog.Close>
