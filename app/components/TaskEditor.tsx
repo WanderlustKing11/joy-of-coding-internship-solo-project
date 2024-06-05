@@ -23,6 +23,7 @@ interface EditTaskDialogProps {
   onClose: () => void;
   isOpen: boolean;
   taskData: z.infer<typeof editTaskSchema> | null;
+  onUpdateTask: (updatedTask: z.infer<typeof editTaskSchema>) => void;
 }
 
 type TaskFormType = z.infer<typeof formTaskSchema>;
@@ -31,6 +32,7 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
   onClose,
   isOpen,
   taskData,
+  onUpdateTask,
 }) => {
   const router = useRouter();
   const [error, setError] = useState('');
@@ -45,6 +47,12 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
   } = useForm<TaskFormType>({
     resolver: zodResolver(formTaskSchema),
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      reset();
+    }
+  }, [isOpen, reset]);
 
   useEffect(() => {
     if (taskData) {
@@ -73,6 +81,7 @@ const TaskEditor: React.FC<EditTaskDialogProps> = ({
       setSubmitting(true);
       const response = await axios.patch(`/api/tasks/${taskData?.id}`, task);
       console.log('Task updated:', response.data);
+      onUpdateTask(response.data);
       onClose();
       router.push('/listslibrary/list');
     } catch (error) {

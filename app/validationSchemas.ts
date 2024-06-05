@@ -29,7 +29,8 @@ export const editTaskSchema = z.object({
   id: z.number(),
   title: z.string(),
   dueDateTime: z.string(),
-  description: z.string()
+  description: z.string(),
+  status: z.string(),
 })
 
 // Schma for PATCH request

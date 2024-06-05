@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import axios from 'axios';
 import { fetchTaskSchema } from '@/app/validationSchemas';
@@ -17,11 +17,13 @@ type TaskData = z.infer<typeof fetchTaskSchema>;
 const ListPage = () => {
   const [listTitle, setListTitle] = useState('Task List');
   const [listEditOpen, setListEditOpen] = useState(false);
-  const [editorOpen, setEditorOpen] = useState(false);
+  const [creatorOpen, setCreatorOpen] = useState(false);
   const [editTaskOpen, setEditTaskOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [sortOrder, setSortOrder] = useState('oldest');
   const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
+
+  // const ref = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     fetchTasks();
@@ -31,6 +33,12 @@ const ListPage = () => {
     const response = await axios.get('/api/tasks');
     setTasks(response.data);
   };
+
+  // useEffect(() => {
+  //   if (!creatorOpen && !editTaskOpen) {
+  //     setCurrentTask(null);
+  //   }
+  // }, [creatorOpen, editTaskOpen]);
 
   const handleDeleteTask = async (id: number) => {
     try {
@@ -61,6 +69,17 @@ const ListPage = () => {
     } catch (error) {
       console.error('Failed to update task:', error);
     }
+  };
+
+  const handleTaskCreated = (newTask: TaskData) => {
+    setTasks((prevTasks) => [...prevTasks, newTask]);
+    setCreatorOpen(false);
+  };
+
+  const handleTaskUpdate = (updatedTask: TaskData) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
   };
 
   const sortHandlers: { [key: string]: (tasks: TaskData[]) => TaskData[] } = {
@@ -98,22 +117,14 @@ const ListPage = () => {
   };
 
   const handleAddTask = () => {
-    setEditorOpen(true); // open the editor for a new task
-    // console.log('Editor is:', editorOpen);
+    setCurrentTask(null); // Clear currentTask to reset the form
+    // ref.current?.reset();
+    setCreatorOpen(true);
   };
 
   const handleCloseEditor = () => {
-    setEditorOpen(false); // Close the editor
+    setCreatorOpen(false); // Close the editor
   };
-
-  // const handleEditTask = (task: TaskData) => {
-  //   const transformedTask = {
-  //     ...task,
-  //     dueDateTime: new Date(task.dueDateTime).toISOString(),
-  //   };
-  //   setCurrentTask(transformedTask);
-  //   setEditTaskOpen(true);
-  // };
 
   const handleEditTask = (task: TaskData) => {
     setCurrentTask(task);
@@ -188,11 +199,16 @@ const ListPage = () => {
             <Link href='/listslibrary/list/new'>New Task</Link>
           </Button> */}
         </div>
-        <TaskCreator isOpen={editorOpen} onClose={handleCloseEditor} />
+        <TaskCreator
+          isOpen={creatorOpen}
+          onClose={handleCloseEditor}
+          onTaskCreated={handleTaskCreated}
+        />
         <TaskEditor
           isOpen={editTaskOpen}
           onClose={handleCloseEditTask}
           taskData={currentTask}
+          onUpdateTask={handleTaskUpdate}
         />
       </Dialog.Root>
     </div>

@@ -11,10 +11,10 @@ import {
 } from '@radix-ui/themes';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { formTaskSchema } from '../validationSchemas';
+import { fetchTaskSchema, formTaskSchema } from '../validationSchemas';
 import { z } from 'zod';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
@@ -22,12 +22,18 @@ import Spinner from './Spinner';
 interface TaskProps {
   onClose: () => void;
   isOpen: boolean;
+  onTaskCreated: (newTask: FetchTaskType) => void;
 }
 
 /////////// Zod inferiing types based on our Schema ////////////
 type TaskFormType = z.infer<typeof formTaskSchema>;
+type FetchTaskType = z.infer<typeof fetchTaskSchema>;
 
-const TaskCreator: React.FC<TaskProps> = ({ onClose, isOpen }) => {
+const TaskCreator: React.FC<TaskProps> = ({
+  onClose,
+  isOpen,
+  onTaskCreated,
+}) => {
   const router = useRouter();
   const [error, setError] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
@@ -61,7 +67,8 @@ const TaskCreator: React.FC<TaskProps> = ({ onClose, isOpen }) => {
       console.log('Task created:', response.data);
       reset();
       onClose();
-      router.push('/listslibrary/list');
+      onTaskCreated(response.data);
+      // router.push('/listslibrary/list');
     } catch (error) {
       console.log('Failed to create task:', error);
       setError('An unexpected error occurred.');
