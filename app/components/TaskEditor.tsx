@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { editTaskSchema, formTaskSchema } from '../validationSchemas';
+import { fetchTaskSchema, formTaskSchema } from '../validationSchemas';
 import { z } from 'zod';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
@@ -22,8 +22,8 @@ import { useRouter } from 'next/navigation';
 interface EditTaskDialogProps {
   onClose: () => void;
   isOpen: boolean;
-  taskData: z.infer<typeof editTaskSchema> | null;
-  onUpdateTask: (updatedTask: z.infer<typeof editTaskSchema>) => void;
+  taskData: z.infer<typeof fetchTaskSchema> | null;
+  onUpdateTask: (updatedTask: z.infer<typeof fetchTaskSchema>) => void;
 }
 
 type TaskFormType = z.infer<typeof formTaskSchema>;

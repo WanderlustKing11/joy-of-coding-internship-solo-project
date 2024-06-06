@@ -45,8 +45,6 @@ const Task: React.FC<TaskProps> = ({
         onDelete={onDelete}
         onCheckClick={onCheckClick}
         isCompleted={isCompleted}
-        // toggleOpen={toggleOpen}
-        // isOpen={isOpen}
       />
     </div>
   );

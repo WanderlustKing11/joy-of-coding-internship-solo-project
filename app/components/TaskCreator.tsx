@@ -92,7 +92,6 @@ const TaskCreator: React.FC<TaskProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {/* <form> */}
       <Dialog.Content maxWidth='450px'>
         <Flex direction='column' gap='3'>
           {error && (
@@ -140,12 +139,10 @@ const TaskCreator: React.FC<TaskProps> = ({
               Cancel
             </Button>
           </Dialog.Close>
-          {/* <Dialog.Close> */}
           <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
             Save
             {isSubmitting && <Spinner />}
           </Button>
-          {/* </Dialog.Close> */}
         </Flex>
       </Dialog.Content>
     </form>

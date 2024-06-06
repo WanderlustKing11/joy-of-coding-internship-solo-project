@@ -1,5 +1,6 @@
 'use client';
 /////////////////////////////////////////////
+///////// NOT A REAL PROFILE PAGE ///////////
 // This is just a test for handling my API //
 /////////////////////////////////////////////
 import { Button, Select } from '@radix-ui/themes';
@@ -57,7 +58,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      ProfilePage
+      Test Page
       <div className='w-full'>
         <SelectSort
           className='w-full flex justify-start'
