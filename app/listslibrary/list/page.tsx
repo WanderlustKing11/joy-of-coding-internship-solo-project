@@ -92,16 +92,17 @@ const ListPage = () => {
 
   const handleUpdateListTitle = (newTitle: string) => {
     setListTitle(newTitle);
-    handleCloseListEdit();
+    // handleCloseListEdit();
+    setListEditOpen(false);
   };
 
-  const handleSortChange = (value: string) => setSortOrder(value);
+  // const handleSortChange = (value: string) => setSortOrder(value);
 
   const sortedTasks = sortHandlers[sortOrder](tasks);
 
-  const handleOpenListEdit = () => setListEditOpen(true);
+  // const handleOpenListEdit = () => setListEditOpen(true);
 
-  const handleCloseListEdit = () => setListEditOpen(false);
+  // const handleCloseListEdit = () => setListEditOpen(false);
 
   const handleAddTask = () => {
     setCurrentTask(null); // Clear currentTask to reset the form
@@ -109,7 +110,7 @@ const ListPage = () => {
     setCreatorOpen(true);
   };
 
-  const handleCloseEditor = () => setCreatorOpen(false);
+  // const handleCloseEditor = () => setCreatorOpen(false);
 
   const handleEditTask = (task: TaskData) => {
     setCurrentTask(task);
@@ -135,7 +136,7 @@ const ListPage = () => {
               <IconButton
                 size='1'
                 color='gray'
-                onClick={handleOpenListEdit}
+                onClick={() => setListEditOpen(true)}
                 aria-label='Edit list title'
               >
                 <Pencil2Icon width='18' height='18' />
@@ -149,7 +150,7 @@ const ListPage = () => {
 
       <SelectSort
         className='w-full flex justify-start'
-        onSortChange={handleSortChange}
+        onSortChange={(value: string) => setSortOrder(value)}
         sortOptions={Object.keys(sortHandlers)}
       />
 
@@ -186,7 +187,7 @@ const ListPage = () => {
         </div>
         <TaskCreator
           isOpen={creatorOpen}
-          onClose={handleCloseEditor}
+          onClose={() => setCreatorOpen(false)}
           onTaskCreated={handleTaskCreated}
         />
         <TaskEditor
