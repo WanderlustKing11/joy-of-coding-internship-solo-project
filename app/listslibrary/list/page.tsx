@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Dialog, IconButton, Select } from '@radix-ui/themes';
 import axios from 'axios';
 import { z } from 'zod';
@@ -24,8 +24,6 @@ const ListPage = () => {
   const [sortOrder, setSortOrder] = useState('oldest');
   const [currentTask, setCurrentTask] = useState<TaskData | null>(null);
 
-  // const ref = useRef<HTMLFormElement>(null);
-
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -34,12 +32,6 @@ const ListPage = () => {
     const response = await axios.get('/api/tasks');
     setTasks(response.data);
   };
-
-  // useEffect(() => {
-  //   if (!creatorOpen && !editTaskOpen) {
-  //     setCurrentTask(null);
-  //   }
-  // }, [creatorOpen, editTaskOpen]);
 
   const handleDeleteTask = async (id: number) => {
     try {
@@ -103,19 +95,13 @@ const ListPage = () => {
     handleCloseListEdit();
   };
 
-  const handleSortChange = (value: string) => {
-    setSortOrder(value);
-  };
+  const handleSortChange = (value: string) => setSortOrder(value);
 
   const sortedTasks = sortHandlers[sortOrder](tasks);
 
-  const handleOpenListEdit = () => {
-    setListEditOpen(true);
-  };
+  const handleOpenListEdit = () => setListEditOpen(true);
 
-  const handleCloseListEdit = () => {
-    setListEditOpen(false);
-  };
+  const handleCloseListEdit = () => setListEditOpen(false);
 
   const handleAddTask = () => {
     setCurrentTask(null); // Clear currentTask to reset the form
@@ -123,9 +109,7 @@ const ListPage = () => {
     setCreatorOpen(true);
   };
 
-  const handleCloseEditor = () => {
-    setCreatorOpen(false); // Close the editor
-  };
+  const handleCloseEditor = () => setCreatorOpen(false);
 
   const handleEditTask = (task: TaskData) => {
     setCurrentTask(task);

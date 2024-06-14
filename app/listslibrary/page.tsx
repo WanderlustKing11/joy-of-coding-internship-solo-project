@@ -33,9 +33,7 @@ const ListsLibraryPage = () => {
         ),
   };
 
-  const handleSortChange = (value: string) => {
-    setSortOrder(value);
-  };
+  const handleSortChange = (value: string) => setSortOrder(value);
 
   const sortedLists = sortHandlers[sortOrder](lists);
 
